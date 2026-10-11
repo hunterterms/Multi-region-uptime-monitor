@@ -1,0 +1,13 @@
+node_modules/
+functions/dist/
+build/
+web/.next/
+web/out/
+
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+
+.env*
+.DS_Store

@@ -1,0 +1,70 @@
+/* Page colors follow the system's light or dark setting. The up and down colors stay the same in both. */
+:root {
+  color-scheme: light;
+  --page: #fcfcfb;
+  --ink: #0b0b0b;
+  --ink-2: #52514e; /* secondary text */
+  --line: #e1e0d9; /* hairlines */
+  --up: #0ca30c;
+  --down: #d03b3b;
+  --no-data: #898781;
+}
+@media (prefers-color-scheme: dark) {
+  :root { color-scheme: dark; --page: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --line: #2c2c2a; }
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.page { max-width: 46rem; margin: 0 auto; padding: 3rem 1rem 4rem; }
+section { margin-top: 2.5rem; }
+h2 { margin: 0 0 0.75rem; font-size: 1rem; }
+.quiet { color: var(--ink-2); }
+.warning { margin: 1.5rem 0 0; padding: 0.5rem 0.75rem; border-left: 3px solid var(--down); }
+footer { margin-top: 3rem; font-size: 0.875rem; }
+
+/* The headline: one sentence that answers "is it up?" */
+.headline { display: flex; gap: 1rem; }
+.headline h1 { margin: 0; font-size: 2.25rem; line-height: 1.15; }
+.headline p { margin: 0.5rem 0 0; color: var(--ink-2); }
+.dot { flex: none; width: 1.25rem; height: 1.25rem; margin-top: 0.55rem; border-radius: 50%; background: var(--no-data); }
+.dot.up { background: var(--up); }
+.dot.down { background: var(--down); }
+.dot.small { display: inline-block; width: 0.6rem; height: 0.6rem; margin: 0 0.4rem 0 0; }
+
+/* Right now: one block per region, split by hairlines */
+.regions { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); }
+.regions li { display: grid; grid-template-columns: 1fr auto; column-gap: 0.75rem; padding: 0.75rem 1rem 0.75rem 0; border-bottom: 1px solid var(--line); }
+.regions li + li { padding-left: 1rem; border-left: 1px solid var(--line); }
+.city { font-weight: 600; }
+.state { display: flex; align-items: center; }
+.code, .latency { color: var(--ink-2); font-size: 0.875rem; }
+
+/* Last 60 minutes: a row of marks per region, plus the overall verdict. Failures are tall. */
+.strips { display: grid; gap: 0.5rem; }
+.strip { display: grid; grid-template-columns: 6.5rem 1fr 4.5rem; grid-template-areas: "label marks count"; align-items: end; column-gap: 0.75rem; }
+.label { grid-area: label; font-size: 0.875rem; color: var(--ink-2); }
+.count { grid-area: count; font-size: 0.875rem; color: var(--ink-2); text-align: right; }
+.marks { grid-area: marks; display: flex; align-items: flex-end; gap: 2px; height: 1rem; }
+.strip.big .marks { height: 2rem; }
+.strip.big .label { color: var(--ink); font-weight: 600; }
+.mark { flex: 1; height: 20%; border-radius: 1px; background: var(--no-data); }
+.mark.up { height: 45%; background: var(--up); }
+.mark.down { height: 100%; background: var(--down); }
+.ends { grid-area: marks; display: flex; justify-content: space-between; font-size: 0.8125rem; color: var(--ink-2); }
+.legend { list-style: none; display: flex; gap: 1.25rem; margin: 0.75rem 0 0; padding: 0; font-size: 0.875rem; color: var(--ink-2); }
+.legend li { display: flex; align-items: flex-end; gap: 0.4rem; }
+.swatch { display: flex; align-items: flex-end; width: 0.4rem; height: 1rem; }
+
+/* Incidents */
+.incidents { width: 100%; border-collapse: collapse; }
+.incidents th { text-align: left; font-size: 0.875rem; color: var(--ink-2); padding: 0 0.75rem 0.4rem 0; border-bottom: 1px solid var(--line); }
+.incidents td { padding: 0.5rem 0.75rem 0.5rem 0; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+
+/* Phones: stack the regions, and put each row's label above its marks */
+@media (max-width: 34rem) {
+  .page { padding-top: 2rem; }
+  .headline h1 { font-size: 1.75rem; }
+  .regions { grid-template-columns: 1fr; }
+  .regions li + li { padding-left: 0; border-left: 0; }
+  .strip { grid-template-columns: 1fr auto; grid-template-areas: "label count" "marks marks"; row-gap: 0.25rem; }
+}

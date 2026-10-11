@@ -1,0 +1,29 @@
+{
+  "name": "functions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "target": "tsx src/target/server.ts",
+    "probe": "tsx src/probe/run-local.ts",
+    "typecheck": "tsc --noEmit",
+    "build": "esbuild src/probe/handler.ts src/target/handler.ts src/evaluator/handler.ts src/status/handler.ts --bundle --platform=node --target=node24 --format=cjs --outbase=src --outdir=dist",
+    "test": "tsx --test src/evaluator/quorum.test.ts src/status/summary.test.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.164",
+    "@types/node": "^26.6.3",
+    "esbuild": "^0.28.2",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1143.0",
+    "@aws-sdk/client-sns": "^3.1146.0",
+    "@aws-sdk/lib-dynamodb": "^3.1143.0"
+  }
+}
