@@ -1,0 +1,51 @@
+name: Deploy
+on:
+    push:
+        branches: [main]
+    workflow_dispatch:
+permissions:
+    id-token: write #fetch an OIDC token
+    contents: read
+concurrency:
+    group: deploy #never run two deploys at once
+    cancel-in-progress: false
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        env:
+            TF_VAR_alert_email: ${{ secrets.ALERT_EMAIL }}
+        steps:
+            - uses: actions/checkout@v7
+            - uses: actions/setup-node@v7
+              with:
+                  node-version: 24
+                  cache: npm
+                  cache-dependency-path: |
+                      functions/package-lock.json
+                      web/package-lock.json
+            - name: Test and build the functions
+              working-directory: functions
+              run: |
+                  npm ci
+                  npm run typecheck
+                  npm test
+                  npm run build
+            - name: Build the page
+              working-directory: web
+              run: |
+                  npm ci
+                  npm run build
+            - uses: aws-actions/configure-aws-credentials@v6
+              with:
+                  role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+                  aws-region: ap-south-1
+            - uses: hashicorp/setup-terraform@v4
+              with:
+                  terraform_version: 1.16.5
+                  terraform_wrapper: false
+            - run: terraform init -input=false
+            - run: terraform apply -auto-approve -input=false
+            - name: Upload the page
+              run: |
+                  aws s3 sync web/out "s3://$(terraform output -raw site_bucket)" --delete
+                  aws cloudfront create-invalidation --distribution-id "$(terraform output -raw site_distribution_id)" --paths "/*"
