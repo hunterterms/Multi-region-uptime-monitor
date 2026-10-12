@@ -7,8 +7,9 @@
     "target": "tsx src/target/server.ts",
     "probe": "tsx src/probe/run-local.ts",
     "typecheck": "tsc --noEmit",
-    "build": "esbuild src/probe/handler.ts src/target/handler.ts src/evaluator/handler.ts src/status/handler.ts --bundle --platform=node --target=node24 --format=cjs --outbase=src --outdir=dist",
-    "test": "tsx --test src/evaluator/quorum.test.ts src/status/summary.test.ts"
+    "build": "esbuild src/chaos/handler.ts src/probe/handler.ts src/target/handler.ts src/evaluator/handler.ts src/status/handler.ts --bundle --platform=node --target=node24 --format=cjs --outbase=src --outdir=dist",
+    "test": "tsx --test src/chaos/plan.test.ts src/evaluator/quorum.test.ts src/status/summary.test.ts",
+    "chaos-plan": "tsx src/chaos/show-plan.ts"
   },
   "keywords": [],
   "author": "",
